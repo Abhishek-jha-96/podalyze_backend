@@ -1,0 +1,5 @@
+# .lintstagedrc.yaml
+
+# You can customize the patterns based on your tech stack
+"*.{js,ts,jsx,tsx,json}":
+  - pnpm validate
