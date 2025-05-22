@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
+  constructor() {}
+
   create() {
     return 'This action adds a new ';
   }

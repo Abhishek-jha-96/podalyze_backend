@@ -3,14 +3,21 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import configuration from './database/configs/configuration';
+import databaseConfig from './configs/db.config';
+import { MongooseConfigService } from './configs/mongoose.config.service';
+import { MongooseModule } from '@nestjs/mongoose';
+
+const infrastructureDatabaseModule = MongooseModule.forRootAsync({
+  useClass: MongooseConfigService,
+});
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [configuration],
+      load: [databaseConfig],
       isGlobal: true,
     }),
+    infrastructureDatabaseModule,
     AuthModule,
   ],
   controllers: [AppController],
