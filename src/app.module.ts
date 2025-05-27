@@ -6,6 +6,7 @@ import { MongooseConfigService } from './configs/mongoose.config.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SwaggerModule } from './swagger/swagger.module';
 import { UserModule } from './user/user.module';
+import authConfig from './auth/config/auth.config';
 
 const infrastructureDatabaseModule = MongooseModule.forRootAsync({
   useClass: MongooseConfigService,
@@ -14,7 +15,8 @@ const infrastructureDatabaseModule = MongooseModule.forRootAsync({
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig],
+      load: [databaseConfig, authConfig],
+      envFilePath: ['.env'],
       isGlobal: true,
     }),
     infrastructureDatabaseModule,
