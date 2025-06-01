@@ -8,5 +8,21 @@ export class CreateUserDto {
   @Transform(lowerCaseTransformer)
   @IsNotEmpty()
   @IsEmail()
-  email: string | null;
+  email: string;
+
+  @ApiProperty({ example: 'password@123', type: String })
+  @IsNotEmpty()
+  password: string;
+
+  @ApiProperty({ example: 'John', type: String })
+  @IsNotEmpty()
+  first_name: string;
+
+  @ApiProperty({ example: 'Doe', type: String })
+  @IsNotEmpty()
+  last_name: string;
+
+  @ApiProperty({ example: 'email', type: String })
+  @IsNotEmpty()
+  provider: string;
 }
