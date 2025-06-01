@@ -12,3 +12,10 @@ export type DatabaseConfig = {
   key?: string;
   maxConnections: number;
 };
+
+export enum DatabaseDefaultConfig {
+  Host = 'localhost',
+  Port = '27017',
+  name = 'database',
+  maxConnections = '100',
+}
