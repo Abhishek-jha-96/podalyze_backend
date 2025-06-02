@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   MongooseOptionsFactory,
@@ -21,8 +21,9 @@ export class MongooseConfigService implements MongooseOptionsFactory {
       const host = db.host ?? 'localhost';
       const port = db.port ?? 27017;
       const name = db.name ?? 'nest';
-      uri = `mongodb://${auth}${host}:${port}/${name}`;
+      uri = `mongodb://${auth}${host}:${port}/${name}?authSource=admin`;
     }
+    Logger.log(uri);
 
     const sslOptions = db.sslEnabled
       ? {

@@ -22,7 +22,5 @@ export class CreateUserDto {
   @IsNotEmpty()
   last_name: string;
 
-  @ApiProperty({ example: 'email', type: String })
-  @IsNotEmpty()
-  provider: string;
+  provider?: string;
 }

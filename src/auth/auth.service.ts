@@ -1,26 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { AuthRegisterLoginDto } from './dto/create-.dto';
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
+import { AllConfigType } from 'src/configs/config.types';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  constructor() {}
+  constructor(
+    private jwtService: JwtService,
+    private usersService: UserService,
+    private configService: ConfigService<AllConfigType>,
+  ) {}
 
-  create() {
-    return 'This action adds a new ';
-  }
-
-  findAll() {
-    return `This action returns all `;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} `;
-  }
-
-  update(id: number) {
-    return `This action updates a #${id} `;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} `;
+  async register(dto: AuthRegisterLoginDto): Promise<void> {
+    await this.usersService.create({
+      ...dto,
+      email: dto.email,
+    });
   }
 }

@@ -1,32 +1,19 @@
-import { Controller, Get, Post, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthRegisterLoginDto } from './dto/create-.dto';
 
-@Controller('/auth')
+@ApiTags('Auth')
+@Controller({
+  path: 'auth',
+  version: '1',
+})
 export class AuthController {
   constructor(private readonly Service: AuthService) {}
 
-  @Post()
-  create() {
-    return this.Service.create();
-  }
-
-  @Get()
-  findAll() {
-    return this.Service.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.Service.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string) {
-    return this.Service.update(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.Service.remove(+id);
+  @Post('email/register')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async register(@Body() createUserDto: AuthRegisterLoginDto) {
+    return this.Service.register(createUserDto);
   }
 }

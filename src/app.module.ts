@@ -24,7 +24,5 @@ const infrastructureDatabaseModule = MongooseModule.forRootAsync({
     SwaggerModule,
     UserModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
