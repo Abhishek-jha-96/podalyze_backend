@@ -7,8 +7,8 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './domain/user';
-import { AuthProvidersEnum } from 'src/auth/config/auth-providers';
 import { UserRepository } from './entities/user.repository';
+import { AuthProvidersEnum } from 'src/auth/config/auth-config.types';
 
 @Injectable()
 export class UserService {

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, now } from 'mongoose';
-import { AuthProvidersEnum } from 'src/auth/config/auth-providers';
+import { AuthProvidersEnum } from 'src/auth/config/auth-config.types';
 import { EntityHelper } from 'src/utils/entity-helper';
 
 export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;

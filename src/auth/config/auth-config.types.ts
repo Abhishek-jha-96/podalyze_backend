@@ -10,3 +10,7 @@ export type AuthConfig = {
   confirmEmailSecret?: string;
   confirmEmailExpires?: ms.StringValue;
 };
+
+export enum AuthProvidersEnum {
+  email = 'email',
+}
