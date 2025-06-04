@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { AllConfigType } from 'src/configs/config.types';
 import { ConfigService } from '@nestjs/config';
+import { LoginUserDto } from './dto/user-login.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,5 +19,14 @@ export class AuthService {
       ...dto,
       email: dto.email,
     });
+  }
+
+  async login(dto: LoginUserDto): Promise<string> {
+    const email = dto.email;
+
+    const user = await this.usersService.findByEmail(email);
+
+    console.log(user);
+    return '';
   }
 }
