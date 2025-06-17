@@ -50,6 +50,10 @@ export class UserService {
     return this.usersRepository.findByEmail(email);
   }
 
+  findById(id: User['id']): Promise<NullableType<User>> {
+    return this.usersRepository.findById(id);
+  }
+
   findAll() {
     return `This action returns all user`;
   }
