@@ -5,21 +5,22 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
-      MONGO_INITDB_DATABASE: ${DATABASE_NAME}
     volumes:
       - podalyze-db:/data/db
     ports:
       - ${DATABASE_PORT}:27017
-  
+
   mongo-express:
     image: mongo-express
     restart: always
+    depends_on:
+      - mongo
     ports:
       - 8081:8081
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: ${DATABASE_USERNAME}
       ME_CONFIG_BASICAUTH_PASSWORD: ${DATABASE_PASSWORD}
-      ME_CONFIG_MONGODB_URL: mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@mongo:${DATABASE_PORT}/
+      ME_CONFIG_MONGODB_URL: mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@mongo:${DATABASE_PORT}/?authSource=admin
 
 volumes:
   podalyze-db:

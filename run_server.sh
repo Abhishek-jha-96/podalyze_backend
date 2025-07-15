@@ -3,9 +3,9 @@
 
 if [ $# -ge 1 ]; then
   env=$1
-  docker-compose -f docker-compose.$env.yaml down
-  docker-compose -f docker-compose.$env.yaml up -d
+  podman compose -f docker-compose.$env.yaml down
+  podman compose -f docker-compose.$env.yaml up -d
 else
-  docker-compose down
-  docker-compose up -d
+  podman compose --env-file .env down
+  podman compose --env-file .env up -d
 fi
