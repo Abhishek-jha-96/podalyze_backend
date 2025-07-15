@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './domain/user';
 import { UserRepository } from './entities/user.repository';
 import { AuthProvidersEnum } from 'src/auth/config/auth-config.types';
@@ -52,22 +51,5 @@ export class UserService {
 
   findById(id: User['id']): Promise<NullableType<User>> {
     return this.usersRepository.findById(id);
-  }
-
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    console.log(updateUserDto);
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }
