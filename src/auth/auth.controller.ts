@@ -2,6 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthRegisterLoginDto } from './dto/create-.dto';
+import { LoginUserDto } from './dto/user-login.dto';
 
 @ApiTags('Auth')
 @Controller({
@@ -15,5 +16,11 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async register(@Body() createUserDto: AuthRegisterLoginDto) {
     return this.Service.register(createUserDto);
+  }
+
+  @Post('email/login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginUserDto: LoginUserDto) {
+    return this.Service.login(loginUserDto);
   }
 }

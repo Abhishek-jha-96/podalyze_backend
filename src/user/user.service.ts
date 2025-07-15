@@ -9,6 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './domain/user';
 import { UserRepository } from './entities/user.repository';
 import { AuthProvidersEnum } from 'src/auth/config/auth-config.types';
+import { NullableType } from 'src/utils/types/types-helper';
 
 @Injectable()
 export class UserService {
@@ -43,6 +44,14 @@ export class UserService {
       password: password,
       provider: createUserDto.provider ?? AuthProvidersEnum.email,
     });
+  }
+
+  findByEmail(email: User['email']): Promise<NullableType<User>> {
+    return this.usersRepository.findByEmail(email);
+  }
+
+  findById(id: User['id']): Promise<NullableType<User>> {
+    return this.usersRepository.findById(id);
   }
 
   findAll() {
