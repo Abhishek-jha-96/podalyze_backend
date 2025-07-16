@@ -6,18 +6,29 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('project')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
+@ApiTags('Projects')
+@Controller({
+  path: 'project',
+  version: '1',
+})
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto) {
-    return this.projectService.create(createProjectDto);
+  create(@Body() createProjectDto: CreateProjectDto, @Request() req) {
+    const user = req.user;
+    return this.projectService.create(createProjectDto, user);
   }
 
   @Get()
@@ -27,7 +38,7 @@ export class ProjectController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.projectService.findOne(+id);
+    return this.projectService.findById(id);
   }
 
   @Patch(':id')

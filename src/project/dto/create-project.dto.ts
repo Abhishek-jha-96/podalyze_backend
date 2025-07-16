@@ -10,8 +10,4 @@ export class CreateProjectDto {
   @IsNotEmpty()
   @IsUrl()
   url: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  createdBy: string;
 }
