@@ -1,42 +1,56 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
 import { ProjectRepository } from './entities/project.repository';
 import { User } from 'src/user/domain/user';
-import { Project } from './domain/project';
-import { NullableType } from 'src/utils/types/types-helper';
-import { getPodcastData } from './utils/youtube.helper';
+import { IPaginationOptions } from 'src/utils/types/types-helper';
 
 @Injectable()
 export class ProjectService {
   constructor(private readonly projectRepository: ProjectRepository) {}
 
-  create(createProjectDto: CreateProjectDto, user: User) {
-    const projectData = getPodcastData(createProjectDto.url);
+  async create(createProjectDto: CreateProjectDto, user: User) {
+    const inferenceEndpoint = process.env.INFERENCE_BASE_URL;
 
-    // create a task.
-    console.log(projectData);
+    if (!inferenceEndpoint) {
+      throw new Error('INFERENCE_BASE_URL is not defined');
+    }
 
-    return this.projectRepository.create({
+    try {
+      const response = await fetch(`${inferenceEndpoint}/analyze`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: createProjectDto.url,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Inference service error: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Inference service failed:', error);
+      throw new Error('Failed to analyze podcast video');
+    }
+
+    const project = await this.projectRepository.create({
       title: createProjectDto.title,
       url: createProjectDto.url,
       createdBy: user.id,
     });
+
+    return project;
   }
 
-  findAll() {
-    return `This action returns all project`;
+  findAll(paginationParams: IPaginationOptions) {
+    return this.projectRepository.findManyWithPagination({
+      sortOptions: null,
+      paginationOptions: paginationParams,
+    });
   }
 
-  findById(id: Project['id']): Promise<NullableType<Project>> {
-    return this.projectRepository.findById(id);
-  }
-
-  update(id: number, updateProjectDto: UpdateProjectDto) {
-    return updateProjectDto;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} project`;
+  remove(id: string) {
+    return this.projectRepository.remove(id);
   }
 }
