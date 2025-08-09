@@ -85,6 +85,7 @@ export class AuthService {
     });
 
     return {
+      user,
       refreshToken,
       token,
       tokenExpires,
