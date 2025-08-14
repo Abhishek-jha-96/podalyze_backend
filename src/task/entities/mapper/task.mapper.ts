@@ -8,6 +8,7 @@ export class TaskMapper {
     domainEntity.id = raw._id.toString();
     domainEntity.project = raw.project?.toString();
     domainEntity.createdBy = raw.createdBy?.toString();
+    domainEntity.status = raw.status;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -25,6 +26,7 @@ export class TaskMapper {
     if (domainEntity.createdBy) {
       persistenceSchema.createdBy = new Types.ObjectId(domainEntity.createdBy);
     }
+    persistenceSchema.status = domainEntity.status;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
     return persistenceSchema;
