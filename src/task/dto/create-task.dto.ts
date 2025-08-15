@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 import { StatusEnum } from '../domain/task';
 
 export class CreateTaskDto {
@@ -8,7 +8,14 @@ export class CreateTaskDto {
   project: string;
 
   @ApiProperty({
-    required: false,
+    enum: StatusEnum,
+    enumName: 'StatusEnum',
+    description: 'The status of the task',
+    example: StatusEnum.ACTIVE,
   })
+  @IsEnum(StatusEnum, {
+    message: `status must be a valid enum value: ${Object.values(StatusEnum).join(', ')}`,
+  })
+  @IsOptional()
   status?: StatusEnum;
 }
