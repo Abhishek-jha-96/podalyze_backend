@@ -7,6 +7,6 @@ import { TaskPersistanceModule } from './entities/entity-persistence.module';
   imports: [TaskPersistanceModule],
   controllers: [TaskController],
   providers: [TaskService],
-  exports: [TaskPersistanceModule],
+  exports: [TaskPersistanceModule, TaskService],
 })
 export class TaskModule {}

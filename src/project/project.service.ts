@@ -3,16 +3,38 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectRepository } from './entities/project.repository';
 import { User } from 'src/user/domain/user';
 import { IPaginationOptions } from 'src/utils/types/types-helper';
+import { TaskService } from 'src/task/task.service';
+import { StatusEnum } from 'src/task/domain/task';
 
 @Injectable()
 export class ProjectService {
-  constructor(private readonly projectRepository: ProjectRepository) {}
+  constructor(
+    private readonly projectRepository: ProjectRepository,
+    private readonly taskService: TaskService,
+  ) {}
 
   async create(createProjectDto: CreateProjectDto, user: User) {
     const inferenceEndpoint = process.env.INFERENCE_BASE_URL;
 
     if (!inferenceEndpoint) {
       throw new Error('INFERENCE_BASE_URL is not defined');
+    }
+
+    const project = await this.projectRepository.create({
+      title: createProjectDto.title,
+      url: createProjectDto.url,
+      createdBy: user.id,
+    });
+
+    const taskData = {
+      project: project.id,
+      status: StatusEnum.ACTIVE,
+    };
+
+    const task = await this.taskService.create(taskData, user);
+
+    if (!task) {
+      throw new Error('Failed to create automatic analysis task.');
     }
 
     try {
@@ -33,12 +55,6 @@ export class ProjectService {
       console.error('Inference service failed:', error);
       throw new Error('Failed to analyze podcast video');
     }
-
-    const project = await this.projectRepository.create({
-      title: createProjectDto.title,
-      url: createProjectDto.url,
-      createdBy: user.id,
-    });
 
     return project;
   }
