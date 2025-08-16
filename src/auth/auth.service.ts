@@ -3,6 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
   UnprocessableEntityException,
+  Logger,
 } from '@nestjs/common';
 import { AuthRegisterLoginDto } from './dto/create-.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -16,9 +17,11 @@ import * as crypto from 'crypto';
 import { User } from 'src/user/domain/user';
 import * as ms from 'ms';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private jwtService: JwtService,
     private usersService: UserService,
@@ -93,44 +96,32 @@ export class AuthService {
   }
 
   async refreshToken(
-    refreshToken: string,
+    refreshTokenDto: RefreshTokenDto,
   ): Promise<Omit<LoginResponseDto, 'user'>> {
-    try {
-      const authConfig = this.configService.getOrThrow('auth', { infer: true });
+    const authConfig = this.configService.getOrThrow('auth', { infer: true });
 
-      // Decode and verify the refresh token
-      const payload = await this.jwtService.verifyAsync<{
-        id: string;
-        hash: string;
-      }>(refreshToken, {
+    // Normalize refresh token input
+    const tokenStr =
+      typeof refreshTokenDto === 'string'
+        ? refreshTokenDto
+        : (refreshTokenDto as any)?.refreshToken;
+
+    const payload: { id: string; hash: string } =
+      await this.jwtService.verifyAsync(tokenStr, {
         secret: authConfig.refreshSecret,
       });
 
-      const userId = payload.id;
-
-      const user = await this.usersService.findById(userId);
-      if (!user) {
-        throw new UnauthorizedException('User not found');
-      }
-
-      // Generate new token pair
-      const {
-        token,
-        refreshToken: newRefreshToken,
-        tokenExpires,
-      } = await this.getTokensData({ id: user.id, hash: payload.hash });
-
-      return {
-        token,
-        refreshToken: newRefreshToken,
-        tokenExpires,
-      };
-    } catch (error) {
-      // Can optionally distinguish errors like TokenExpiredError or JsonWebTokenError
-      throw new UnauthorizedException(
-        'Invalid or expired refresh token' + error.message,
-      );
+    const user = await this.usersService.findById(payload.id);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
     }
+
+    const { token, refreshToken, tokenExpires } = await this.getTokensData({
+      id: user.id,
+      hash: payload.hash,
+    });
+
+    return { token, refreshToken, tokenExpires };
   }
 
   private async getTokensData(data: { id: User['id']; hash: string }) {

@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthRegisterLoginDto } from './dto/create-.dto';
 import { LoginUserDto } from './dto/user-login.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('Auth')
 @Controller({
@@ -22,5 +23,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginUserDto: LoginUserDto) {
     return this.Service.login(loginUserDto);
+  }
+
+  @Post('email/refresh_token')
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.Service.refreshToken(refreshTokenDto);
   }
 }
