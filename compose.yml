@@ -1,0 +1,40 @@
+services:
+   backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: podalyze_backend
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    depends_on:
+      - mongo
+  
+   mongo:
+    image: mongo:8.0.8
+    container_name: podalyze_mongo
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./backup:/backup
+    command: mongod --auth --bind_ip_all
+    
+   mongo-express:
+    image: mongo-express:latest
+    container_name: podalyze_mongo_express
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
