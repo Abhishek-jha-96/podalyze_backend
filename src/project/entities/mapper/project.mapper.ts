@@ -8,6 +8,9 @@ export class ProjectMapper {
     domainEntity.id = raw._id.toString();
     domainEntity.title = raw.title;
     domainEntity.url = raw.url;
+    domainEntity.hostPopularity = raw.hostPopularity;
+    domainEntity.guestPopularity = raw.guestPopularity;
+    domainEntity.numberOfAds = raw.numberOfAds;
     domainEntity.createdBy = raw.createdBy?.toString();
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -25,6 +28,9 @@ export class ProjectMapper {
     if (domainEntity.createdBy) {
       persistenceSchema.createdBy = new Types.ObjectId(domainEntity.createdBy);
     }
+    persistenceSchema.hostPopularity = domainEntity.hostPopularity;
+    persistenceSchema.guestPopularity = domainEntity.guestPopularity;
+    persistenceSchema.numberOfAds = domainEntity.numberOfAds;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
     return persistenceSchema;

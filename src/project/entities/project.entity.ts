@@ -34,6 +34,15 @@ export class ProjectSchemaClass extends EntityHelper {
   @Prop()
   url: string;
 
+  @Prop()
+  hostPopularity: number;
+
+  @Prop()
+  guestPopularity: number;
+
+  @Prop()
+  numberOfAds: number;
+
   @Prop({ default: now })
   createdAt: Date;
 

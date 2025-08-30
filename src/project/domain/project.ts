@@ -20,6 +20,24 @@ export class Project {
   })
   url: string;
 
+  @ApiProperty({
+    type: Number,
+    example: 55,
+  })
+  hostPopularity: number;
+
+  @ApiProperty({
+    type: Number,
+    example: 85,
+  })
+  guestPopularity: number;
+
+  @ApiProperty({
+    type: Number,
+    example: 5,
+  })
+  numberOfAds: number;
+
   @ApiProperty()
   createdBy: string;
 

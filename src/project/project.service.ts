@@ -24,6 +24,9 @@ export class ProjectService {
       title: createProjectDto.title,
       url: createProjectDto.url,
       createdBy: user.id,
+      hostPopularity: createProjectDto.hostPopularity,
+      guestPopularity: createProjectDto.guestPopularity,
+      numberOfAds: createProjectDto.numberOfAds,
     });
 
     const taskData = {

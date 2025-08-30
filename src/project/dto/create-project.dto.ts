@@ -10,4 +10,16 @@ export class CreateProjectDto {
   @IsNotEmpty()
   @IsUrl()
   url: string;
+
+  @ApiProperty({ example: 55, type: Number })
+  @IsNotEmpty()
+  hostPopularity: number;
+
+  @ApiProperty({ example: 89, type: Number })
+  @IsNotEmpty()
+  guestPopularity: number;
+
+  @ApiProperty({ example: 3, type: Number })
+  @IsNotEmpty()
+  numberOfAds: number;
 }
