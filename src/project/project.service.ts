@@ -59,7 +59,8 @@ export class ProjectService {
       throw new Error('Failed to analyze podcast video');
     }
 
-    return project;
+    const projectWithTasks = await this.projectRepository.findById(project.id);
+    return projectWithTasks ?? project;
   }
 
   findAll(paginationParams: IPaginationOptions) {

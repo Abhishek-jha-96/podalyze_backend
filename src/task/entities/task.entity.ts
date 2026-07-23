@@ -3,7 +3,6 @@ import { HydratedDocument, now, Types } from 'mongoose';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { Schema as MongooseSchema } from 'mongoose';
 import { UserSchemaClass } from 'src/user/entities/user.entity';
-import { ProjectSchemaClass } from 'src/project/entities/project.entity';
 import { StatusEnum } from '../domain/task';
 
 export type TaskSchemaDocument = HydratedDocument<TaskSchemaClass>;
@@ -17,9 +16,10 @@ export type TaskSchemaDocument = HydratedDocument<TaskSchemaClass>;
 })
 export class TaskSchemaClass extends EntityHelper {
   @Prop({
-    type: MongooseSchema,
-    ref: ProjectSchemaClass.name,
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'ProjectSchemaClass',
     required: true,
+    index: true,
   })
   project: Types.ObjectId;
 

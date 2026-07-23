@@ -31,6 +31,7 @@ export class ProjectDocumentRepository implements ProjectRepository {
   }): Promise<Project[]> {
     const projectObject = await this.projectModel
       .find()
+      .populate('tasks')
       .sort(
         sortOptions?.reduce(
           (accumulator, sort) => ({
@@ -43,22 +44,21 @@ export class ProjectDocumentRepository implements ProjectRepository {
       )
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
-
-    return projectObject.map((projectObject) =>
-      ProjectMapper.toDomain(projectObject),
-    );
+    return projectObject.map((project) => ProjectMapper.toDomain(project));
   }
 
   async findById(id: Project['id']): Promise<NullableType<Project>> {
-    const projectObject = await this.projectModel.findById(id);
+    const projectObject = await this.projectModel
+      .findById(id)
+      .populate('tasks');
     return projectObject ? ProjectMapper.toDomain(projectObject) : null;
   }
 
   async findByIds(ids: Project['id'][]): Promise<Project[]> {
-    const projectObject = await this.projectModel.find({ _id: { $in: ids } });
-    return projectObject.map((projectObject) =>
-      ProjectMapper.toDomain(projectObject),
-    );
+    const projectObject = await this.projectModel
+      .find({ _id: { $in: ids } })
+      .populate('tasks');
+    return projectObject.map((project) => ProjectMapper.toDomain(project));
   }
 
   async findByCreatedBy({
@@ -66,7 +66,9 @@ export class ProjectDocumentRepository implements ProjectRepository {
   }: {
     createdBy: Project['createdBy'];
   }): Promise<NullableType<Project>> {
-    const projectObject = await this.projectModel.findOne({ createdBy });
+    const projectObject = await this.projectModel
+      .findOne({ createdBy })
+      .populate('tasks');
     return projectObject ? ProjectMapper.toDomain(projectObject) : null;
   }
 
@@ -89,11 +91,11 @@ export class ProjectDocumentRepository implements ProjectRepository {
       ...clonedPayload,
     };
 
-    const projectObject = await this.projectModel.findOneAndUpdate(
-      filter,
-      ProjectMapper.toPersistance(updatedData),
-      { new: true },
-    );
+    const projectObject = await this.projectModel
+      .findOneAndUpdate(filter, ProjectMapper.toPersistance(updatedData), {
+        new: true,
+      })
+      .populate('tasks');
 
     return projectObject ? ProjectMapper.toDomain(projectObject) : null;
   }
