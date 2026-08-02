@@ -3,4 +3,7 @@ import { CreateTaskDto } from './create-task.dto';
 
 export class UpdateTaskDto extends PickType(PartialType(CreateTaskDto), [
   'status',
+  'sentiment',
+  'watchTime',
+  'metaData',
 ] as const) {}

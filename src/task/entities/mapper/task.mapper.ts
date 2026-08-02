@@ -11,7 +11,9 @@ export class TaskMapper {
     domainEntity.status = raw.status;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
-
+    domainEntity.sentiment = raw.sentiment;
+    domainEntity.watchTime = raw.watchTime;
+    domainEntity.metaData = raw.metaData;
     return domainEntity;
   }
 
@@ -29,6 +31,9 @@ export class TaskMapper {
     persistenceSchema.status = domainEntity.status;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
+    persistenceSchema.sentiment = domainEntity.sentiment;
+    persistenceSchema.watchTime = domainEntity.watchTime;
+    persistenceSchema.metaData = domainEntity.metaData;
     return persistenceSchema;
   }
 }

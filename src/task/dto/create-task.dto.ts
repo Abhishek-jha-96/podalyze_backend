@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
-import { StatusEnum } from '../domain/task';
+import { SentimentEnum, StatusEnum } from '../domain/task';
 
 export class CreateTaskDto {
   @ApiProperty()
@@ -18,4 +18,24 @@ export class CreateTaskDto {
   })
   @IsOptional()
   status?: StatusEnum;
+
+  @ApiProperty({
+    enum: SentimentEnum,
+    enumName: 'SentimentEnum',
+    description: 'The sentiment of the task',
+    example: SentimentEnum.POSITIVE,
+  })
+  @IsEnum(SentimentEnum, {
+    message: `sentiment must be a valid enum value: ${Object.values(SentimentEnum).join(', ')}`,
+  })
+  @IsOptional()
+  sentiment?: SentimentEnum;
+
+  @ApiProperty()
+  @IsOptional()
+  watchTime?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  metaData?: Record<string, any>;
 }

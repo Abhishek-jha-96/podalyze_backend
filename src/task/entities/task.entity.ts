@@ -3,7 +3,7 @@ import { HydratedDocument, now, Types } from 'mongoose';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { Schema as MongooseSchema } from 'mongoose';
 import { UserSchemaClass } from 'src/user/entities/user.entity';
-import { StatusEnum } from '../domain/task';
+import { SentimentEnum, StatusEnum } from '../domain/task';
 
 export type TaskSchemaDocument = HydratedDocument<TaskSchemaClass>;
 
@@ -42,6 +42,22 @@ export class TaskSchemaClass extends EntityHelper {
 
   @Prop({ default: now })
   updatedAt: Date;
+
+  @Prop({
+    type: String,
+    enum: SentimentEnum,
+  })
+  sentiment?: SentimentEnum;
+
+  @Prop({
+    type: Number,
+  })
+  watchTime?: number;
+  
+  @Prop({
+    type: MongooseSchema.Types.Mixed,
+  })
+  metaData?: Record<string, any>;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(TaskSchemaClass);

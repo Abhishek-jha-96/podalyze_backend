@@ -7,6 +7,12 @@ export enum StatusEnum {
   PENDING = 'pending',
 }
 
+export enum SentimentEnum {
+  POSITIVE = 'Positive',
+  NEGATIVE = 'Negative',
+  NEUTRAL = 'Neutral',
+}
+
 export class Task {
   @ApiProperty({
     type: String,
@@ -35,4 +41,21 @@ export class Task {
 
   @ApiProperty()
   createdBy: string;
+
+  @ApiProperty({
+    enum: SentimentEnum,
+    enumName: 'SentimentEnum',
+    description: 'The sentiment of the task',
+    example: SentimentEnum.POSITIVE,
+  })
+  @IsEnum(SentimentEnum, {
+    message: 'Sentiment must be one of Positive, Negative, Neutral',
+  })
+  sentiment?: SentimentEnum;
+
+  @ApiProperty()
+  watchTime?: number;
+
+  @ApiProperty()
+  metaData?: Record<string, any>;
 }

@@ -14,6 +14,9 @@ export class TaskService {
       project: createTaskDto.project,
       status: createTaskDto.status,
       createdBy: user.id,
+      sentiment: createTaskDto.sentiment,
+      watchTime: createTaskDto.watchTime,
+      metaData: createTaskDto.metaData,
     });
 
     return task;
