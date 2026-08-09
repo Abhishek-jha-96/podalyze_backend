@@ -41,13 +41,19 @@ export class ProjectService {
     }
 
     try {
-      const response = await fetch(`${inferenceEndpoint}/analyze`, {
+      const response = await fetch(`${inferenceEndpoint}/api/v1/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          title: createProjectDto.title,
           url: createProjectDto.url,
+          host_popularity: createProjectDto.hostPopularity,
+          guest_popularity: createProjectDto.guestPopularity,
+          number_of_ads: createProjectDto.numberOfAds,
+          task_id: task.id,
+          user_id: user.id,
         }),
       });
 
