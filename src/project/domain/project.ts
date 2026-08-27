@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Task } from 'src/task/domain/task';
 
 export class Project {
   @ApiProperty({
@@ -46,4 +47,10 @@ export class Project {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty({
+    type: [Task],
+    required: false,
+  })
+  tasks?: Task[];
 }

@@ -1,6 +1,7 @@
 import { Project } from 'src/project/domain/project';
 import { ProjectSchemaClass } from '../project.entity';
 import { Types } from 'mongoose';
+import { TaskMapper } from 'src/task/entities/mapper/task.mapper';
 
 export class ProjectMapper {
   static toDomain(raw: ProjectSchemaClass): Project {
@@ -14,6 +15,9 @@ export class ProjectMapper {
     domainEntity.createdBy = raw.createdBy?.toString();
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
+    if (raw.tasks) {
+      domainEntity.tasks = raw.tasks.map((task) => TaskMapper.toDomain(task));
+    }
 
     return domainEntity;
   }

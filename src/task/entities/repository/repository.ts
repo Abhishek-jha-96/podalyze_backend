@@ -7,6 +7,7 @@ import { Task } from 'src/task/domain/task';
 import { IPaginationOptions, NullableType } from 'src/utils/types/types-helper';
 import { TaskMapper } from '../mapper/task.mapper';
 import { SortTaskDto } from 'src/task/dto/query-task.dto';
+import { toObjectId } from 'src/utils/to-object-id';
 
 @Injectable()
 export class TaskDocumentRepository implements TaskRepository {
@@ -61,7 +62,14 @@ export class TaskDocumentRepository implements TaskRepository {
   }: {
     createdBy: Task['createdBy'];
   }): Promise<NullableType<Task>> {
-    const taskObject = await this.taskModel.findOne({ createdBy });
+    const createdById = toObjectId(createdBy);
+    if (!createdById) {
+      return null;
+    }
+
+    const taskObject = await this.taskModel.findOne({
+      $or: [{ createdBy: createdById }, { createdBy }],
+    });
     return taskObject ? TaskMapper.toDomain(taskObject) : null;
   }
 

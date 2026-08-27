@@ -1,5 +1,5 @@
 # ========================
-# Stage 1: Build
+# Base
 # ========================
 FROM node:20-alpine AS base
 
@@ -7,29 +7,43 @@ RUN npm install -g pnpm
 
 WORKDIR /app
 
-# =========================
-# Stage 2: Builder (production only)
-# =========================
-FROM base as builder
+# ========================
+# Dependencies
+# ========================
+FROM base AS deps
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
+# ========================
+# Development
+# ========================
+FROM deps AS development
+
 COPY . .
+
+EXPOSE 3000
+
+CMD ["pnpm", "run", "start:dev"]
+
+# ========================
+# Builder
+# ========================
+FROM deps AS builder
+
+COPY . .
+
 RUN pnpm run build
 
 # ========================
-# Stage 3: Production
+# Production
 # ========================
-FROM builder AS runner
+FROM base AS production
 
-# Copy only essential files
 COPY package.json pnpm-lock.yaml ./
 
-# Only install production dependencies
 RUN pnpm install --prod --frozen-lockfile
 
-# Copy built code and other required files
 COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000

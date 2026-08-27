@@ -7,6 +7,7 @@ import { ProjectSchemaClass } from '../project.entity';
 import { Model } from 'mongoose';
 import { ProjectMapper } from '../mapper/project.mapper';
 import { SortProjectDto } from 'src/project/dto/query-project.dto';
+import { toObjectId } from 'src/utils/to-object-id';
 
 @Injectable()
 export class ProjectDocumentRepository implements ProjectRepository {
@@ -31,6 +32,7 @@ export class ProjectDocumentRepository implements ProjectRepository {
   }): Promise<Project[]> {
     const projectObject = await this.projectModel
       .find()
+      .populate('tasks')
       .sort(
         sortOptions?.reduce(
           (accumulator, sort) => ({
@@ -43,22 +45,21 @@ export class ProjectDocumentRepository implements ProjectRepository {
       )
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
-
-    return projectObject.map((projectObject) =>
-      ProjectMapper.toDomain(projectObject),
-    );
+    return projectObject.map((project) => ProjectMapper.toDomain(project));
   }
 
   async findById(id: Project['id']): Promise<NullableType<Project>> {
-    const projectObject = await this.projectModel.findById(id);
+    const projectObject = await this.projectModel
+      .findById(id)
+      .populate('tasks');
     return projectObject ? ProjectMapper.toDomain(projectObject) : null;
   }
 
   async findByIds(ids: Project['id'][]): Promise<Project[]> {
-    const projectObject = await this.projectModel.find({ _id: { $in: ids } });
-    return projectObject.map((projectObject) =>
-      ProjectMapper.toDomain(projectObject),
-    );
+    const projectObject = await this.projectModel
+      .find({ _id: { $in: ids } })
+      .populate('tasks');
+    return projectObject.map((project) => ProjectMapper.toDomain(project));
   }
 
   async findByCreatedBy({
@@ -66,8 +67,35 @@ export class ProjectDocumentRepository implements ProjectRepository {
   }: {
     createdBy: Project['createdBy'];
   }): Promise<NullableType<Project>> {
-    const projectObject = await this.projectModel.findOne({ createdBy });
+    const createdById = toObjectId(createdBy);
+    if (!createdById) {
+      return null;
+    }
+
+    const projectObject = await this.projectModel
+      .findOne({
+        $or: [{ createdBy: createdById }, { createdBy }],
+      })
+      .populate('tasks');
     return projectObject ? ProjectMapper.toDomain(projectObject) : null;
+  }
+
+  async findAllByCreatedBy({
+    createdBy,
+  }: {
+    createdBy: Project['createdBy'];
+  }): Promise<Project[]> {
+    const createdById = toObjectId(createdBy);
+    if (!createdById) {
+      return [];
+    }
+
+    const projectObjects = await this.projectModel
+      .find({
+        $or: [{ createdBy: createdById }, { createdBy }],
+      })
+      .populate('tasks');
+    return projectObjects.map((project) => ProjectMapper.toDomain(project));
   }
 
   async update(
@@ -89,11 +117,11 @@ export class ProjectDocumentRepository implements ProjectRepository {
       ...clonedPayload,
     };
 
-    const projectObject = await this.projectModel.findOneAndUpdate(
-      filter,
-      ProjectMapper.toPersistance(updatedData),
-      { new: true },
-    );
+    const projectObject = await this.projectModel
+      .findOneAndUpdate(filter, ProjectMapper.toPersistance(updatedData), {
+        new: true,
+      })
+      .populate('tasks');
 
     return projectObject ? ProjectMapper.toDomain(projectObject) : null;
   }
