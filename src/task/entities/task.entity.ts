@@ -24,9 +24,10 @@ export class TaskSchemaClass extends EntityHelper {
   project: Types.ObjectId;
 
   @Prop({
-    type: MongooseSchema,
+    type: MongooseSchema.Types.ObjectId,
     ref: UserSchemaClass.name,
     required: true,
+    index: true,
   })
   createdBy: Types.ObjectId;
 
@@ -53,7 +54,7 @@ export class TaskSchemaClass extends EntityHelper {
     type: Number,
   })
   watchTime?: number;
-  
+
   @Prop({
     type: MongooseSchema.Types.Mixed,
   })

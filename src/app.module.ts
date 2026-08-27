@@ -8,7 +8,9 @@ import { SwaggerModule } from './swagger/swagger.module';
 import { UserModule } from './user/user.module';
 import { ProjectModule } from './project/project.module';
 import { TaskModule } from './task/task.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import authConfig from './auth/config/auth.config';
+import redisConfig from './configs/redis.config';
 
 const infrastructureDatabaseModule = MongooseModule.forRootAsync({
   useClass: MongooseConfigService,
@@ -17,7 +19,7 @@ const infrastructureDatabaseModule = MongooseModule.forRootAsync({
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig, authConfig],
+      load: [databaseConfig, authConfig, redisConfig],
       envFilePath: ['.env'],
       isGlobal: true,
     }),
@@ -27,6 +29,7 @@ const infrastructureDatabaseModule = MongooseModule.forRootAsync({
     UserModule,
     ProjectModule,
     TaskModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}

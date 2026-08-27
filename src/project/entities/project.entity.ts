@@ -30,9 +30,10 @@ export class ProjectSchemaClass extends EntityHelper {
   title: string;
 
   @Prop({
-    type: MongooseSchema,
+    type: MongooseSchema.Types.ObjectId,
     ref: UserSchemaClass.name,
     required: true,
+    index: true,
   })
   createdBy: Types.ObjectId;
 

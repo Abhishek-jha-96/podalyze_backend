@@ -7,6 +7,7 @@ import { ProjectSchemaClass } from '../project.entity';
 import { Model } from 'mongoose';
 import { ProjectMapper } from '../mapper/project.mapper';
 import { SortProjectDto } from 'src/project/dto/query-project.dto';
+import { toObjectId } from 'src/utils/to-object-id';
 
 @Injectable()
 export class ProjectDocumentRepository implements ProjectRepository {
@@ -66,10 +67,35 @@ export class ProjectDocumentRepository implements ProjectRepository {
   }: {
     createdBy: Project['createdBy'];
   }): Promise<NullableType<Project>> {
+    const createdById = toObjectId(createdBy);
+    if (!createdById) {
+      return null;
+    }
+
     const projectObject = await this.projectModel
-      .findOne({ createdBy })
+      .findOne({
+        $or: [{ createdBy: createdById }, { createdBy }],
+      })
       .populate('tasks');
     return projectObject ? ProjectMapper.toDomain(projectObject) : null;
+  }
+
+  async findAllByCreatedBy({
+    createdBy,
+  }: {
+    createdBy: Project['createdBy'];
+  }): Promise<Project[]> {
+    const createdById = toObjectId(createdBy);
+    if (!createdById) {
+      return [];
+    }
+
+    const projectObjects = await this.projectModel
+      .find({
+        $or: [{ createdBy: createdById }, { createdBy }],
+      })
+      .populate('tasks');
+    return projectObjects.map((project) => ProjectMapper.toDomain(project));
   }
 
   async update(

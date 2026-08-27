@@ -25,6 +25,11 @@ export abstract class ProjectRepository {
   }: {
     createdBy: Project['createdBy'];
   }): Promise<NullableType<Project>>;
+  abstract findAllByCreatedBy({
+    createdBy,
+  }: {
+    createdBy: Project['createdBy'];
+  }): Promise<Project[]>;
 
   abstract update(
     id: Project['id'],
